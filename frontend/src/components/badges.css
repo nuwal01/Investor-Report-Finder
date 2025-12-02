@@ -1,0 +1,65 @@
+/* Additional Badge Styles for New Report Types */
+
+.badge-annual {
+    background: #c3dafe;
+    color: #2c5282;
+}
+
+.badge-quarterly {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.badge-earnings {
+    background: #feebc8;
+    color: #744210;
+}
+
+.badge-presentation {
+    background: #e9d8fd;
+    color: #44337a;
+}
+
+.badge-8-k {
+    background: #fed7d7;
+    color: #742a2a;
+}
+
+.badge-financial_statements {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+.quarter-badge {
+    background: #e2e8f0;
+    color: #2d3748;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.source-badge {
+    background: #f7fafc;
+    color: #4a5568;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+}
+
+.quarter-cell,
+.source-cell {
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.title-cell {
+    color: #4a5568;
+    max-width: 300px;
+}
+
+.action-cell {
+    text-align: center;
+}
