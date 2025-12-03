@@ -1,5 +1,5 @@
 """
-FastAPI Backend for AI Investor Report Finder
+FastAPI Backend for Investor-Report-Finder
 
 Provides REST API endpoints for searching investor reports.
 """
@@ -29,7 +29,7 @@ load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="AI Investor Report Finder API",
+    title="Investor-Report-Finder API",
     description="Search for investor relations reports using ticker symbols or natural language",
     version="2.0.0"
 )
@@ -122,13 +122,17 @@ class SettingsRequest(BaseModel):
     tavily_api_key: Optional[str] = Field(None, description="Tavily API Key")
     openai_api_key: Optional[str] = Field(None, description="OpenAI API Key")
     serper_api_key: Optional[str] = Field(None, description="Serper API Key")
+    openai_provider: Optional[str] = Field(None, description="OpenAI Provider (openai or openrouter)")
+    openai_base_url: Optional[str] = Field(None, description="Custom OpenAI Base URL")
 
 class SettingsResponse(BaseModel):
     """Response model for settings."""
     google_api_key: str = Field(description="Google API Key (masked)")
     tavily_api_key: str = Field(description="Tavily API Key (masked)")
-    openai_api_key: str = Field(description="OpenAI API Key (masked)"),
+    openai_api_key: str = Field(description="OpenAI API Key (masked)")
     serper_api_key: str = Field(description="Serper API Key (masked)")
+    openai_provider: str = Field(description="OpenAI Provider")
+    openai_base_url: str = Field(description="OpenAI Base URL")
 
 
 # Initialize services
@@ -139,7 +143,7 @@ company_resolver = get_resolver()
 @app.get("/")
 async def root():
     """Health check endpoint."""
-    return {"status": "ok", "message": "AI Investor Report Finder API v2.0 is running"}
+    return {"status": "ok", "message": "Investor-Report-Finder API v2.0 is running"}
 
 @app.post("/search", response_model=SearchResponse)
 async def search_reports(request: SearchRequest):
@@ -305,11 +309,23 @@ async def get_settings():
             return "Not configured"
         return f"****{key[-4:]}"
     
+    # Get provider settings with defaults
+    provider = os.getenv("OPENAI_PROVIDER", "openai")
+    base_url = os.getenv("OPENAI_BASE_URL", "")
+    
+    # Auto-detect provider from base URL if not explicitly set
+    if not base_url and provider == "openai":
+        base_url = "https://api.openai.com/v1"
+    elif not base_url and provider == "openrouter":
+        base_url = "https://openrouter.ai/api/v1"
+    
     return {
         "google_api_key": mask_key(os.getenv("GOOGLE_API_KEY")),
         "tavily_api_key": mask_key(os.getenv("TAVILY_API_KEY")),
         "openai_api_key": mask_key(os.getenv("OPENAI_API_KEY")),
-        "serper_api_key": mask_key(os.getenv("SERPER_API_KEY"))
+        "serper_api_key": mask_key(os.getenv("SERPER_API_KEY")),
+        "openai_provider": provider,
+        "openai_base_url": base_url
     }
 
 @app.post("/settings")
@@ -337,6 +353,20 @@ async def update_settings(settings: SettingsRequest):
             env_content['OPENAI_API_KEY'] = settings.openai_api_key
         if settings.serper_api_key:
             env_content['SERPER_API_KEY'] = settings.serper_api_key
+        
+        # Handle OpenAI provider settings
+        if settings.openai_provider:
+            env_content['OPENAI_PROVIDER'] = settings.openai_provider
+            # Auto-set base URL based on provider if not explicitly provided
+            if not settings.openai_base_url:
+                if settings.openai_provider == "openrouter":
+                    env_content['OPENAI_BASE_URL'] = "https://openrouter.ai/api/v1"
+                elif settings.openai_provider == "openai":
+                    env_content['OPENAI_BASE_URL'] = "https://api.openai.com/v1"
+        
+        # Allow manual base URL override
+        if settings.openai_base_url:
+            env_content['OPENAI_BASE_URL'] = settings.openai_base_url
         
         # Write back to .env
         with open(env_path, 'w') as f:

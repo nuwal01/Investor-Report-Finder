@@ -1,5 +1,5 @@
 """
-AI Investor Report Finder - Main Application
+Investor-Report-Finder - Main Application
 
 Combines LLM-based prompt parsing with web scraping to find investor reports
 using natural language queries.

@@ -19,6 +19,7 @@ load_dotenv()
 # Get API keys
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL', '')  # Custom base URL (e.g., for OpenRouter)
 
 
 class PromptParser:
@@ -99,7 +100,11 @@ class PromptParser:
         try:
             from openai import OpenAI
             
-            client = OpenAI(api_key=OPENAI_API_KEY)
+            # Use custom base URL if provided (for OpenRouter, Azure, etc.)
+            if OPENAI_BASE_URL:
+                client = OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL)
+            else:
+                client = OpenAI(api_key=OPENAI_API_KEY)
             
             system_prompt = """You are an expert at extracting information from investor report queries.
 

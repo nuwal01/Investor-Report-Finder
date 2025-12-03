@@ -59,7 +59,7 @@ function App() {
                 <header className="header">
                     <div className="header-content">
                         <div>
-                            <h1>🔍 AI Investor Report Finder</h1>
+                            <h1>🔍 Investor-Report-Finder</h1>
                             <p>Find annual and quarterly reports for public companies</p>
                         </div>
                         <button

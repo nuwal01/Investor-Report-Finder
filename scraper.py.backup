@@ -1,5 +1,5 @@
 """
-AI Investor Report Finder - Scraping Agent
+AI-Investor-Report-Finder - Scraping Agent
 
 This module provides functionality to search for and extract investor relations 
 reports (annual/quarterly PDFs) from company IR pages.

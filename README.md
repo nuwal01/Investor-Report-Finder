@@ -1,4 +1,4 @@
-# AI Investor Report Finder
+# Investor-Report-Finder
 
 A Python-based scraping agent that finds and extracts investor relations reports (annual/quarterly PDFs) from company IR pages based on ticker symbol, report type, and date range.
 

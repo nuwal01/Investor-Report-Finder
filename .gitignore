@@ -28,3 +28,7 @@ Thumbs.db
 
 # Distribution / packaging
 *.egg-info/
+
+# Logs and Backups
+*.log
+*.backup

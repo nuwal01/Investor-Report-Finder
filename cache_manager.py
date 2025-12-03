@@ -1,5 +1,5 @@
 """
-Cache Manager for AI Investor Report Finder
+Cache Manager for Investor-Report-Finder
 
 Handles SQLite-based caching of IR page URLs and report links.
 """

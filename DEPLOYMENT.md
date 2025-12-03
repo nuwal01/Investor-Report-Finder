@@ -1,26 +1,29 @@
 # Deployment Guide
 
-This guide explains how to deploy the AI Investor Report Finder to Vercel.
+This guide explains how to deploy the Investor-Report-Finder to Vercel.
 
 ## Prerequisites
 
-1.  **GitHub Account**: You need a GitHub account to host the repository.
-2.  **Vercel Account**: You need a Vercel account linked to your GitHub.
+- A GitHub account
+- A Vercel account (free tier is sufficient)
+- Git installed locally
+- Your project code ready
 
-## Step 1: Push Code to GitHub
+## Step 1: Push to GitHub
 
-1.  Initialize a Git repository in the project folder:
+1.  Initialize a Git repository in the `investor-report-finder` folder (if not already done):
     ```bash
+    cd investor-report-finder
     git init
     git add .
     git commit -m "Initial commit"
     ```
 
-2.  Create a new repository on GitHub (e.g., `investor-report-finder`).
+2.  Create a new repository on GitHub (e.g., `Investor-Report-Finder`).
 
-3.  Link your local repo to GitHub and push:
+3.  Link your local repo to GitHub:
     ```bash
-    git remote add origin https://github.com/YOUR_USERNAME/investor-report-finder.git
+    git remote add origin https://github.com/nuwal01/Investor-Report-Finder
     git branch -M main
     git push -u origin main
     ```
