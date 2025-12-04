@@ -1,0 +1,789 @@
+{
+  "companies": [
+    {
+      "ticker": "AAPL",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Apple Inc.",
+      "legal_name": "Apple Inc.",
+      "aliases": [
+        "Apple",
+        "Apple Computer"
+      ]
+    },
+    {
+      "ticker": "MSFT",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Microsoft Corporation",
+      "legal_name": "Microsoft Corporation",
+      "aliases": [
+        "Microsoft",
+        "Microsoft Corp"
+      ]
+    },
+    {
+      "ticker": "GOOGL",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Alphabet Inc.",
+      "legal_name": "Alphabet Inc.",
+      "aliases": [
+        "Google",
+        "Alphabet"
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Amazon.com Inc.",
+      "legal_name": "Amazon.com, Inc.",
+      "aliases": [
+        "Amazon",
+        "Amazon.com"
+      ]
+    },
+    {
+      "ticker": "META",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Meta Platforms Inc.",
+      "legal_name": "Meta Platforms, Inc.",
+      "aliases": [
+        "Meta",
+        "Meta Platforms",
+        "Facebook"
+      ]
+    },
+    {
+      "ticker": "TSLA",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Tesla Inc.",
+      "legal_name": "Tesla, Inc.",
+      "aliases": [
+        "Tesla",
+        "Tesla Motors"
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "NVIDIA Corporation",
+      "legal_name": "NVIDIA Corporation",
+      "aliases": [
+        "NVIDIA",
+        "Nvidia"
+      ]
+    },
+    {
+      "ticker": "NFLX",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Netflix Inc.",
+      "legal_name": "Netflix, Inc.",
+      "aliases": [
+        "Netflix"
+      ]
+    },
+    {
+      "ticker": "INTC",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Intel Corporation",
+      "legal_name": "Intel Corporation",
+      "aliases": [
+        "Intel"
+      ]
+    },
+    {
+      "ticker": "AMD",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Advanced Micro Devices Inc.",
+      "legal_name": "Advanced Micro Devices, Inc.",
+      "aliases": [
+        "AMD",
+        "Advanced Micro Devices"
+      ]
+    },
+    {
+      "ticker": "CRM",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Salesforce Inc.",
+      "legal_name": "salesforce.com, inc.",
+      "aliases": [
+        "Salesforce"
+      ]
+    },
+    {
+      "ticker": "ADBE",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Adobe Inc.",
+      "legal_name": "Adobe Inc.",
+      "aliases": [
+        "Adobe"
+      ]
+    },
+    {
+      "ticker": "PYPL",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "PayPal Holdings Inc.",
+      "legal_name": "PayPal Holdings, Inc.",
+      "aliases": [
+        "PayPal"
+      ]
+    },
+    {
+      "ticker": "UBER",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Uber Technologies Inc.",
+      "legal_name": "Uber Technologies, Inc.",
+      "aliases": [
+        "Uber",
+        "Uber Technologies"
+      ]
+    },
+    {
+      "ticker": "ABNB",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Airbnb Inc.",
+      "legal_name": "Airbnb, Inc.",
+      "aliases": [
+        "Airbnb"
+      ]
+    },
+    {
+      "ticker": "SNAP",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Snap Inc.",
+      "legal_name": "Snap Inc.",
+      "aliases": [
+        "Snap",
+        "Snapchat"
+      ]
+    },
+    {
+      "ticker": "ORCL",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Oracle Corporation",
+      "legal_name": "Oracle Corporation",
+      "aliases": [
+        "Oracle"
+      ]
+    },
+    {
+      "ticker": "IBM",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "International Business Machines Corporation",
+      "legal_name": "International Business Machines Corporation",
+      "aliases": [
+        "IBM"
+      ]
+    },
+    {
+      "ticker": "CSCO",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Cisco Systems Inc.",
+      "legal_name": "Cisco Systems, Inc.",
+      "aliases": [
+        "Cisco",
+        "Cisco Systems"
+      ]
+    },
+    {
+      "ticker": "JPM",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "JPMorgan Chase & Co.",
+      "legal_name": "JPMorgan Chase & Co.",
+      "aliases": [
+        "JPMorgan",
+        "JP Morgan",
+        "JPMorgan Chase"
+      ]
+    },
+    {
+      "ticker": "BAC",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Bank of America Corporation",
+      "legal_name": "Bank of America Corporation",
+      "aliases": [
+        "Bank of America"
+      ]
+    },
+    {
+      "ticker": "WFC",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Wells Fargo & Company",
+      "legal_name": "Wells Fargo & Company",
+      "aliases": [
+        "Wells Fargo"
+      ]
+    },
+    {
+      "ticker": "GS",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "The Goldman Sachs Group Inc.",
+      "legal_name": "The Goldman Sachs Group, Inc.",
+      "aliases": [
+        "Goldman Sachs"
+      ]
+    },
+    {
+      "ticker": "MS",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Morgan Stanley",
+      "legal_name": "Morgan Stanley",
+      "aliases": [
+        "Morgan Stanley"
+      ]
+    },
+    {
+      "ticker": "V",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Visa Inc.",
+      "legal_name": "Visa Inc.",
+      "aliases": [
+        "Visa"
+      ]
+    },
+    {
+      "ticker": "MA",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Mastercard Incorporated",
+      "legal_name": "Mastercard Incorporated",
+      "aliases": [
+        "Mastercard"
+      ]
+    },
+    {
+      "ticker": "KO",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "The Coca-Cola Company",
+      "legal_name": "The Coca-Cola Company",
+      "aliases": [
+        "Coca-Cola",
+        "Coca Cola"
+      ]
+    },
+    {
+      "ticker": "PEP",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "PepsiCo Inc.",
+      "legal_name": "PepsiCo, Inc.",
+      "aliases": [
+        "PepsiCo",
+        "Pepsi"
+      ]
+    },
+    {
+      "ticker": "MCD",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "McDonald's Corporation",
+      "legal_name": "McDonald's Corporation",
+      "aliases": [
+        "McDonald's",
+        "McDonalds"
+      ]
+    },
+    {
+      "ticker": "NKE",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Nike Inc.",
+      "legal_name": "NIKE, Inc.",
+      "aliases": [
+        "Nike"
+      ]
+    },
+    {
+      "ticker": "SBUX",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Starbucks Corporation",
+      "legal_name": "Starbucks Corporation",
+      "aliases": [
+        "Starbucks"
+      ]
+    },
+    {
+      "ticker": "DIS",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "The Walt Disney Company",
+      "legal_name": "The Walt Disney Company",
+      "aliases": [
+        "Disney",
+        "Walt Disney"
+      ]
+    },
+    {
+      "ticker": "WMT",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Walmart Inc.",
+      "legal_name": "Walmart Inc.",
+      "aliases": [
+        "Walmart"
+      ]
+    },
+    {
+      "ticker": "COST",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Costco Wholesale Corporation",
+      "legal_name": "Costco Wholesale Corporation",
+      "aliases": [
+        "Costco"
+      ]
+    },
+    {
+      "ticker": "TGT",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Target Corporation",
+      "legal_name": "Target Corporation",
+      "aliases": [
+        "Target"
+      ]
+    },
+    {
+      "ticker": "HD",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "The Home Depot Inc.",
+      "legal_name": "The Home Depot, Inc.",
+      "aliases": [
+        "Home Depot"
+      ]
+    },
+    {
+      "ticker": "BA",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "The Boeing Company",
+      "legal_name": "The Boeing Company",
+      "aliases": [
+        "Boeing"
+      ]
+    },
+    {
+      "ticker": "LMT",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Lockheed Martin Corporation",
+      "legal_name": "Lockheed Martin Corporation",
+      "aliases": [
+        "Lockheed Martin"
+      ]
+    },
+    {
+      "ticker": "PFE",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Pfizer Inc.",
+      "legal_name": "Pfizer Inc.",
+      "aliases": [
+        "Pfizer"
+      ]
+    },
+    {
+      "ticker": "JNJ",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Johnson & Johnson",
+      "legal_name": "Johnson & Johnson",
+      "aliases": [
+        "Johnson and Johnson"
+      ]
+    },
+    {
+      "ticker": "MRNA",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Moderna Inc.",
+      "legal_name": "Moderna, Inc.",
+      "aliases": [
+        "Moderna"
+      ]
+    },
+    {
+      "ticker": "LLY",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Eli Lilly and Company",
+      "legal_name": "Eli Lilly and Company",
+      "aliases": [
+        "Eli Lilly"
+      ]
+    },
+    {
+      "ticker": "MRK",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Merck & Co. Inc.",
+      "legal_name": "Merck & Co., Inc.",
+      "aliases": [
+        "Merck"
+      ]
+    },
+    {
+      "ticker": "ABBV",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "AbbVie Inc.",
+      "legal_name": "AbbVie Inc.",
+      "aliases": [
+        "AbbVie"
+      ]
+    },
+    {
+      "ticker": "CMI",
+      "exchange": "NYSE",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "Cummins Inc.",
+      "legal_name": "Cummins Inc.",
+      "aliases": [
+        "Cummins"
+      ]
+    },
+    {
+      "ticker": "AAL",
+      "exchange": "NASDAQ",
+      "exchange_code": "US",
+      "country": "United States",
+      "primary_name": "American Airlines Group Inc.",
+      "legal_name": "American Airlines Group Inc.",
+      "aliases": [
+        "American Airlines",
+        "American Airlines Group"
+      ]
+    },
+    {
+      "ticker": "RELIANCE.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "Reliance Industries Limited",
+      "legal_name": "Reliance Industries Limited",
+      "aliases": [
+        "Reliance",
+        "Reliance Industries",
+        "RIL"
+      ]
+    },
+    {
+      "ticker": "TCS.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "Tata Consultancy Services Limited",
+      "legal_name": "Tata Consultancy Services Limited",
+      "aliases": [
+        "TCS",
+        "Tata Consultancy",
+        "Tata Consultancy Services"
+      ]
+    },
+    {
+      "ticker": "INFY.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "Infosys Limited",
+      "legal_name": "Infosys Limited",
+      "aliases": [
+        "Infosys"
+      ]
+    },
+    {
+      "ticker": "HDFCBANK.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "HDFC Bank Limited",
+      "legal_name": "HDFC Bank Limited",
+      "aliases": [
+        "HDFC Bank",
+        "HDFC"
+      ]
+    },
+    {
+      "ticker": "JSWSTEEL.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "JSW Steel Limited",
+      "legal_name": "JSW Steel Limited",
+      "aliases": [
+        "JSW Steel",
+        "JSWSTEEL",
+        "JSW"
+      ]
+    },
+    {
+      "ticker": "WIPRO.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "Wipro Limited",
+      "legal_name": "Wipro Limited",
+      "aliases": [
+        "Wipro"
+      ]
+    },
+    {
+      "ticker": "ITC.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "ITC Limited",
+      "legal_name": "ITC Limited",
+      "aliases": [
+        "ITC"
+      ]
+    },
+    {
+      "ticker": "BAJFINANCE.NS",
+      "exchange": "NSE",
+      "exchange_code": "NS",
+      "country": "India",
+      "primary_name": "Bajaj Finance Limited",
+      "legal_name": "Bajaj Finance Limited",
+      "aliases": [
+        "Bajaj Finance",
+        "Bajaj"
+      ]
+    },
+    {
+      "ticker": "7203.T",
+      "exchange": "TSE",
+      "exchange_code": "T",
+      "country": "Japan",
+      "primary_name": "Toyota Motor Corporation",
+      "legal_name": "トヨタ自動車株式会社",
+      "aliases": [
+        "Toyota",
+        "Toyota Motors"
+      ]
+    },
+    {
+      "ticker": "6758.T",
+      "exchange": "TSE",
+      "exchange_code": "T",
+      "country": "Japan",
+      "primary_name": "Sony Group Corporation",
+      "legal_name": "ソニーグループ株式会社",
+      "aliases": [
+        "Sony",
+        "Sony Group"
+      ]
+    },
+    {
+      "ticker": "9984.T",
+      "exchange": "TSE",
+      "exchange_code": "T",
+      "country": "Japan",
+      "primary_name": "SoftBank Group Corp.",
+      "legal_name": "ソフトバンクグループ株式会社",
+      "aliases": [
+        "SoftBank",
+        "Softbank Group"
+      ]
+    },
+    {
+      "ticker": "005930.KS",
+      "exchange": "KRX",
+      "exchange_code": "KS",
+      "country": "South Korea",
+      "primary_name": "Samsung Electronics Co., Ltd.",
+      "legal_name": "삼성전자주식회사",
+      "aliases": [
+        "Samsung Electronics",
+        "Samsung"
+      ]
+    },
+    {
+      "ticker": "010140.KS",
+      "exchange": "KRX",
+      "exchange_code": "KS",
+      "country": "South Korea",
+      "primary_name": "Samsung Heavy Industries Co., Ltd.",
+      "legal_name": "삼성중공업주식회사",
+      "aliases": [
+        "Samsung Heavy Industries",
+        "Samsung Heavy"
+      ]
+    },
+    {
+      "ticker": "005380.KS",
+      "exchange": "KRX",
+      "exchange_code": "KS",
+      "country": "South Korea",
+      "primary_name": "Hyundai Motor Company",
+      "legal_name": "현대자동차주식회사",
+      "aliases": [
+        "Hyundai",
+        "Hyundai Motor"
+      ]
+    },
+    {
+      "ticker": "BP.L",
+      "exchange": "LSE",
+      "exchange_code": "L",
+      "country": "United Kingdom",
+      "primary_name": "BP p.l.c.",
+      "legal_name": "BP p.l.c.",
+      "aliases": [
+        "BP",
+        "British Petroleum"
+      ]
+    },
+    {
+      "ticker": "HSBA.L",
+      "exchange": "LSE",
+      "exchange_code": "L",
+      "country": "United Kingdom",
+      "primary_name": "HSBC Holdings plc",
+      "legal_name": "HSBC Holdings plc",
+      "aliases": [
+        "HSBC",
+        "HSBC Holdings"
+      ]
+    },
+    {
+      "ticker": "ULVR.L",
+      "exchange": "LSE",
+      "exchange_code": "L",
+      "country": "United Kingdom",
+      "primary_name": "Unilever PLC",
+      "legal_name": "Unilever PLC",
+      "aliases": [
+        "Unilever"
+      ]
+    },
+    {
+      "ticker": "SAP.DE",
+      "exchange": "FWB",
+      "exchange_code": "DE",
+      "country": "Germany",
+      "primary_name": "SAP SE",
+      "legal_name": "SAP SE",
+      "aliases": [
+        "SAP"
+      ]
+    },
+    {
+      "ticker": "SIE.DE",
+      "exchange": "FWB",
+      "exchange_code": "DE",
+      "country": "Germany",
+      "primary_name": "Siemens AG",
+      "legal_name": "Siemens Aktiengesellschaft",
+      "aliases": [
+        "Siemens"
+      ]
+    },
+    {
+      "ticker": "VOW3.DE",
+      "exchange": "FWB",
+      "exchange_code": "DE",
+      "country": "Germany",
+      "primary_name": "Volkswagen AG",
+      "legal_name": "Volkswagen Aktiengesellschaft",
+      "aliases": [
+        "Volkswagen",
+        "VW"
+      ]
+    },
+    {
+      "ticker": "BHP.AX",
+      "exchange": "ASX",
+      "exchange_code": "AX",
+      "country": "Australia",
+      "primary_name": "BHP Group Limited",
+      "legal_name": "BHP Group Limited",
+      "aliases": [
+        "BHP"
+      ]
+    },
+    {
+      "ticker": "CBA.AX",
+      "exchange": "ASX",
+      "exchange_code": "AX",
+      "country": "Australia",
+      "primary_name": "Commonwealth Bank of Australia",
+      "legal_name": "Commonwealth Bank of Australia",
+      "aliases": [
+        "Commonwealth Bank",
+        "CBA"
+      ]
+    }
+  ]
+}
