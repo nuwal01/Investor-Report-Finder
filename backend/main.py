@@ -476,13 +476,3 @@ async def generate_report(request: ReportGenerationRequest):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-from fastapi import FastAPI
-
-@app.get("/healthz")
-def health_check():
-    return {
-        "status": "ok",
-        "message": "Investor-Report-Finder API v2.0 is running"
-    }
-
