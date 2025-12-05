@@ -24,7 +24,11 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
+<<<<<<< HEAD:backend/scraper.py
 from backend.cache_manager import CacheManager
+=======
+from cache_manager import CacheManager
+>>>>>>> 45cbadcd6295e50a6e266b055914411f889226b6:scraper.py
 from backend.ticker_parser import TickerParser
 
 # Configure logging
