@@ -4,7 +4,6 @@ FastAPI Backend for Investor-Report-Finder
 Provides REST API endpoints for searching investor reports.
 """
 
-import sys
 import os
 from typing import Optional, List, Dict
 from pathlib import Path
@@ -16,13 +15,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
-# Add parent directory to path to import scraper and parser
-parent_dir = Path(__file__).parent.parent
-sys.path.insert(0, str(parent_dir))
-
-from scraper import IRReportFinder
-from prompt_parser import PromptParser
-from company_resolver import get_resolver
+# Import from backend package using absolute imports
+from backend.scraper import IRReportFinder
+from backend.prompt_parser import PromptParser
+from backend.company_resolver import get_resolver
 
 # Load environment variables
 load_dotenv()
@@ -408,8 +404,8 @@ async def analyze_financials(request: AnalysisRequest):
     This endpoint provides structure for future full implementation.
     """
     try:
-        from ticker_parser import TickerParser
-        from financial_analyzer import FinancialAnalyzer
+        from backend.ticker_parser import TickerParser
+        from backend.financial_analyzer import FinancialAnalyzer
         
         ticker_parser = TickerParser()
         analyzer = FinancialAnalyzer()
@@ -442,8 +438,8 @@ async def analyze_financials(request: AnalysisRequest):
 async def generate_report(request: ReportGenerationRequest):
     """Generate comprehensive financial analysis report."""
     try:
-        from report_generator import FinancialReportGenerator
-        from accounting_standards import AccountingStandardMapper
+        from backend.report_generator import FinancialReportGenerator
+        from backend.accounting_standards import AccountingStandardMapper
         
         generator = FinancialReportGenerator()
         standards_mapper = AccountingStandardMapper()
@@ -475,4 +471,4 @@ async def generate_report(request: ReportGenerationRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)

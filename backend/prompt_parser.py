@@ -10,6 +10,7 @@ import re
 import json
 from typing import Dict, Optional, Tuple
 from datetime import datetime
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -36,10 +37,12 @@ class PromptParser:
     def _load_company_mapping(self, filepath: str) -> Dict[str, str]:
         """Load company name to ticker mapping from JSON file."""
         try:
-            # If filepath is relative, make it absolute relative to this file
+            # If filepath is relative, make it absolute relative to project root
             if not os.path.isabs(filepath):
-                current_dir = os.path.dirname(os.path.abspath(__file__))
-                filepath = os.path.join(current_dir, filepath)
+                # Go up from backend/ to project root
+                current_dir = Path(__file__).parent
+                project_root = current_dir.parent
+                filepath = str(project_root / filepath)
                 
             with open(filepath, 'r') as f:
                 return json.load(f)

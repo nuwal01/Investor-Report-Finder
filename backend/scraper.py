@@ -18,13 +18,14 @@ import argparse
 from typing import List, Dict, Optional
 from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
-from cache_manager import CacheManager
-from ticker_parser import TickerParser
+from backend.cache_manager import CacheManager
+from backend.ticker_parser import TickerParser
 
 # Configure logging
 logging.basicConfig(
@@ -90,11 +91,12 @@ class IRReportFinder:
         """
         try:
             import json
-            # Use absolute path to ensure we find the file regardless of CWD
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            mapping_file = os.path.join(current_dir, 'company_mapping.json')
+            # Use absolute path - go up one level from backend/ to project root
+            current_dir = Path(__file__).parent
+            project_root = current_dir.parent
+            mapping_file = project_root / 'company_mapping.json'
             
-            if not os.path.exists(mapping_file):
+            if not mapping_file.exists():
                 logger.warning(f"Company mapping file not found: {mapping_file}")
                 return {}
             

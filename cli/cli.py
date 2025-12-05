@@ -1,17 +1,17 @@
 """
-Investor-Report-Finder - Main Application
+Investor-Report-Finder - CLI Application
 
 Combines LLM-based prompt parsing with web scraping to find investor reports
 using natural language queries.
 
 Usage:
-    python main.py "Download the annual report for Apple from 2020"
-    python main.py "Get Microsoft quarterly reports from 2023 to 2024"
+    python -m cli.cli "Download the annual report for Apple from 2020"
+    python -m cli.cli "Get Microsoft quarterly reports from 2023 to 2024"
 """
 
 import sys
-from prompt_parser import PromptParser
-from scraper import IRReportFinder
+from backend.prompt_parser import PromptParser
+from backend.scraper import IRReportFinder
 
 
 def display_results(reports, parsed_data):

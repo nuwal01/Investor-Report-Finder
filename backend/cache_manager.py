@@ -10,7 +10,8 @@ from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent / "cache.db"
+# DB path - go up from backend/ to project root
+DB_PATH = Path(__file__).parent.parent / "cache.db"
 
 class CacheManager:
     """Manages SQLite cache for IR pages and reports."""
