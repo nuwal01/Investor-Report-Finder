@@ -56,6 +56,10 @@ class SearchRequest(BaseModel):
     
     # Mode selection
     mode: str = Field("auto", description="Search mode: 'auto', 'manual', or 'prompt'")
+    
+    # User-provided API keys (sent from frontend)
+    tavily_api_key: Optional[str] = Field(None, description="User's Tavily API key")
+    serper_api_key: Optional[str] = Field(None, description="User's Serper API key")
 
 class ReportResponse(BaseModel):
     """Response model for a single report."""
@@ -210,7 +214,19 @@ async def search_reports(request: SearchRequest):
              
         # Execute search
         print(f"Searching with params: {search_params}")
-        reports = scraper.search_reports(
+        
+        # Use user-provided API keys if available, otherwise fall back to env vars
+        user_scraper = scraper
+        if request.tavily_api_key or request.serper_api_key:
+            # Create a new scraper with user's API keys
+            import os
+            if request.tavily_api_key:
+                os.environ['TAVILY_API_KEY'] = request.tavily_api_key
+            if request.serper_api_key:
+                os.environ['SERPER_API_KEY'] = request.serper_api_key
+            user_scraper = IRReportFinder(api_key=request.tavily_api_key)
+        
+        reports = user_scraper.search_reports(
             ticker=search_params['ticker'],
             report_type=search_params.get('report_type', 'annual'),
             start_year=search_params.get('start_year'),

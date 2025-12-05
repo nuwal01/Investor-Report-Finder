@@ -24,12 +24,23 @@ function App() {
         }
 
         try {
+            // Get API keys from localStorage (saved by SettingsModal)
+            const tavilyKey = localStorage.getItem('tavily_api_key')
+            const serperKey = localStorage.getItem('serper_api_key')
+
+            // Include API keys in request if available
+            const requestBody = {
+                ...searchData,
+                tavily_api_key: tavilyKey || undefined,
+                serper_api_key: serperKey || undefined
+            }
+
             const response = await fetch(`${API_URL}/search`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(searchData),
+                body: JSON.stringify(requestBody),
             })
 
             if (!response.ok) {

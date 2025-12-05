@@ -23,15 +23,35 @@ function SettingsModal({ isOpen, onClose }) {
         setLoading(true)
         setMessage(null)
         try {
-            const response = await fetch(`${API_URL}/settings`)
-            if (!response.ok) throw new Error('Failed to load settings')
-            const data = await response.json()
-            setSettings({
-                google_api_key: data.google_api_key,
-                tavily_api_key: data.tavily_api_key,
-                openai_api_key: data.openai_api_key,
-                serper_api_key: data.serper_api_key
-            })
+            // Load from localStorage first (user's keys)
+            const localKeys = {
+                google_api_key: localStorage.getItem('google_api_key') || '',
+                tavily_api_key: localStorage.getItem('tavily_api_key') || '',
+                openai_api_key: localStorage.getItem('openai_api_key') || '',
+                serper_api_key: localStorage.getItem('serper_api_key') || ''
+            }
+
+            // If we have local keys, use them
+            if (localKeys.tavily_api_key || localKeys.serper_api_key) {
+                setSettings(localKeys)
+            } else {
+                // Otherwise try to fetch from server (legacy support)
+                try {
+                    const response = await fetch(`${API_URL}/settings`)
+                    if (response.ok) {
+                        const data = await response.json()
+                        setSettings({
+                            google_api_key: data.google_api_key || '',
+                            tavily_api_key: data.tavily_api_key || '',
+                            openai_api_key: data.openai_api_key || '',
+                            serper_api_key: data.serper_api_key || ''
+                        })
+                    }
+                } catch (serverError) {
+                    console.log('Server fetch failed (using local storage):', serverError)
+                    setSettings(localKeys)
+                }
+            }
         } catch (error) {
             setMessage({ type: 'error', text: error.message })
         } finally {
@@ -45,22 +65,38 @@ function SettingsModal({ isOpen, onClose }) {
         setMessage(null)
 
         try {
-            const response = await fetch(`${API_URL}/settings`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    google_api_key: settings.google_api_key.startsWith('****') ? null : settings.google_api_key,
-                    tavily_api_key: settings.tavily_api_key.startsWith('****') ? null : settings.tavily_api_key,
-                    openai_api_key: settings.openai_api_key.startsWith('****') ? null : settings.openai_api_key,
-                    serper_api_key: settings.serper_api_key.startsWith('****') ? null : settings.serper_api_key
+            // Save to localStorage for client-side use
+            if (settings.tavily_api_key && !settings.tavily_api_key.startsWith('****')) {
+                localStorage.setItem('tavily_api_key', settings.tavily_api_key)
+            }
+            if (settings.serper_api_key && !settings.serper_api_key.startsWith('****')) {
+                localStorage.setItem('serper_api_key', settings.serper_api_key)
+            }
+            if (settings.google_api_key && !settings.google_api_key.startsWith('****')) {
+                localStorage.setItem('google_api_key', settings.google_api_key)
+            }
+            if (settings.openai_api_key && !settings.openai_api_key.startsWith('****')) {
+                localStorage.setItem('openai_api_key', settings.openai_api_key)
+            }
+
+            // Also try to save to server (optional - may not be needed for user-managed keys)
+            try {
+                const response = await fetch(`${API_URL}/settings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        google_api_key: settings.google_api_key.startsWith('****') ? null : settings.google_api_key,
+                        tavily_api_key: settings.tavily_api_key.startsWith('****') ? null : settings.tavily_api_key,
+                        openai_api_key: settings.openai_api_key.startsWith('****') ? null : settings.openai_api_key,
+                        serper_api_key: settings.serper_api_key.startsWith('****') ? null : settings.serper_api_key
+                    })
                 })
-            })
+                // Server save is optional - continue even if it fails
+            } catch (serverError) {
+                console.log('Server save failed (optional):', serverError)
+            }
 
-            const data = await response.json()
-
-            if (!response.ok) throw new Error(data.detail || 'Failed to save settings')
-
-            setMessage({ type: 'success', text: data.message })
+            setMessage({ type: 'success', text: 'API keys saved locally! They will be used for searches.' })
             setTimeout(() => {
                 onClose()
             }, 2000)
