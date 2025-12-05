@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import CompanyAutocomplete from './CompanyAutocomplete'
 import AmbiguityModal from './AmbiguityModal'
+import { API_URL } from '../config'
 import '../tabs.css'
-
-const API_URL = 'http://localhost:8000'
 
 function SearchForm({ onSearch, onReset, loading }) {
     const [searchInput, setSearchInput] = useState('')

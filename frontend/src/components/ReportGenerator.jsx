@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_URL } from '../config';
 import './ReportGenerator.css';
 
 export default function ReportGenerator({ ticker, companyName, reports }) {
@@ -10,7 +11,7 @@ export default function ReportGenerator({ ticker, companyName, reports }) {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:8000/api/generate-report', {
+            const response = await fetch(`${API_URL}/api/generate-report`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

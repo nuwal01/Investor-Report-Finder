@@ -5,9 +5,8 @@ import SettingsModal from './components/SettingsModal'
 import TickerInfo from './components/TickerInfo'
 import FinancialAnalysis from './components/FinancialAnalysis'
 import ReportGenerator from './components/ReportGenerator'
+import { API_URL } from './config'
 import './App.css'
-
-const API_URL = 'http://localhost:8000'
 
 function App() {
     const [results, setResults] = useState(null)

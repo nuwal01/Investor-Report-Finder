@@ -1,59 +1,214 @@
 # Deployment Guide
 
-This guide explains how to deploy the Investor-Report-Finder to Vercel.
+This guide explains how to deploy the Investor-Report-Finder after the restructure to proper Python packaging.
 
-## Prerequisites
+---
 
-- A GitHub account
-- A Vercel account (free tier is sufficient)
-- Git installed locally
-- Your project code ready
+## Project Structure
 
-## Step 1: Push to GitHub
+```
+Investor-Report-Finder/
+├── backend/                    # Python package
+│   ├── __init__.py
+│   ├── main.py                 # FastAPI app entry point
+│   ├── scraper.py
+│   ├── prompt_parser.py
+│   ├── cache_manager.py
+│   ├── company_resolver.py
+│   ├── ticker_parser.py
+│   ├── financial_analyzer.py
+│   ├── report_generator.py
+│   ├── accounting_standards.py
+│   └── pdf_parser.py
+├── cli/                        # CLI package
+│   ├── __init__.py
+│   └── cli.py
+├── frontend/                   # React/Vite frontend
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+├── company_mapping.json
+├── company_mapping_enhanced.json
+├── requirements.txt
+└── vercel.json
+```
 
-1.  Initialize a Git repository in the `investor-report-finder` folder (if not already done):
-    ```bash
-    cd investor-report-finder
-    git init
-    git add .
-    git commit -m "Initial commit"
-    ```
+---
 
-2.  Create a new repository on GitHub (e.g., `Investor-Report-Finder`).
+## Local Development
 
-3.  Link your local repo to GitHub:
-    ```bash
-    git remote add origin https://github.com/nuwal01/Investor-Report-Finder
-    git branch -M main
-    git push -u origin main
-    ```
+### Start Backend
+```bash
+cd Investor-Report-Finder
+uvicorn backend.main:app --reload
+```
+Backend runs at: **http://localhost:8000**
 
-## Step 2: Deploy to Vercel
+### Start Frontend
+```bash
+cd Investor-Report-Finder/frontend
+npm install
+npm run dev
+```
+Frontend runs at: **http://localhost:5173**
 
-1.  Go to the [Vercel Dashboard](https://vercel.com/dashboard).
-2.  Click **"Add New..."** -> **"Project"**.
-3.  Import the `investor-report-finder` repository you just created.
-4.  **Configure Project**:
-    *   **Framework Preset**: Vercel should detect `Vite` for the frontend. If not, select it.
-    *   **Root Directory**: Leave as `./`.
-    *   **Build Command**: `cd frontend && npm install && npm run build` (or rely on default if Vercel detects it).
-        *   *Note*: Our `vercel.json` handles the build configuration, so you might not need to change much.
-    *   **Environment Variables**: Add the following:
-        *   `TAVILY_API_KEY`: Your Tavily API key.
-        *   `OPENAI_API_KEY`: (Optional) If you use OpenAI.
-        *   `GOOGLE_API_KEY`: (Optional) If you use Gemini.
+### Run CLI
+```bash
+cd Investor-Report-Finder
+python -m cli.cli "Find Apple 2023 annual report"
+```
 
-5.  Click **"Deploy"**.
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+TAVILY_API_KEY=your_tavily_api_key
+SERPER_API_KEY=your_serper_api_key
+OPENAI_API_KEY=your_openai_api_key      # Optional
+GOOGLE_API_KEY=your_google_api_key      # Optional
+```
+
+---
+
+## Deployment Options
+
+### Option 1: Vercel (Frontend + Serverless Backend)
+
+1. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Restructured to proper Python packaging"
+   git push origin main
+   ```
+
+2. **Deploy on Vercel**
+   - Import project from GitHub
+   - Add environment variables in Vercel dashboard
+   - The `vercel.json` configures the build
+
+3. **Update vercel.json** for new structure:
+   ```json
+   {
+     "builds": [
+       {
+         "src": "backend/main.py",
+         "use": "@vercel/python"
+       },
+       {
+         "src": "frontend/package.json",
+         "use": "@vercel/static-build",
+         "config": {
+           "distDir": "dist"
+         }
+       }
+     ],
+     "routes": [
+       { "src": "/api/(.*)", "dest": "backend/main.py" },
+       { "src": "/(.*)", "dest": "frontend/$1" }
+     ]
+   }
+   ```
+
+> ⚠️ **Vercel Limitation**: Free tier has 10-second timeout. Consider Render/Railway for backend if scraping is needed.
+
+---
+
+### Option 2: Render (Recommended for Backend)
+
+1. **Create requirements.txt** (already exists):
+   ```
+   fastapi
+   uvicorn
+   requests
+   beautifulsoup4
+   python-dotenv
+   pydantic
+   tavily-python
+   openai
+   google-generativeai
+   ```
+
+2. **Deploy Backend on Render**
+   - Create new Web Service
+   - Connect GitHub repo
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
+   - Add environment variables
+
+3. **Deploy Frontend on Vercel**
+   - Update frontend API URL to point to Render backend
+
+---
+
+### Option 3: Docker
+
+**Dockerfile** for backend:
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+**Build and run**:
+```bash
+docker build -t investor-finder .
+docker run -p 8000:8000 --env-file .env investor-finder
+```
+
+---
+
+### Option 4: Railway
+
+1. Connect GitHub repository
+2. Railway auto-detects Python
+3. Set environment variables
+4. Use start command: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
+
+---
 
 ## Important Notes
 
-### Serverless Function Timeouts
-Vercel's free tier limits serverless functions (our Python backend) to **10 seconds**.
-*   **Direct Search**: Searching via Tavily is fast and should work fine.
-*   **Scraping**: If the app falls back to scraping, it enforces a 12-second rate limit delay. This **will cause a timeout** on Vercel's free tier.
-*   **Solution**: For heavy scraping, consider deploying the backend to **Render** or **Railway**, which allow longer execution times.
+### ASGI App Location
+The FastAPI app is now at:
+```
+backend.main:app
+```
+**NOT** `main:app` (the old path).
 
-### File Persistence
-Vercel serverless functions are ephemeral. The `cache.db` (SQLite) file **will not persist** between requests.
-*   Every request starts with a fresh, empty cache.
-*   To enable persistent caching, you would need to switch to an external database like **PostgreSQL** (e.g., Vercel Postgres or Supabase).
+### Import Structure
+All imports use absolute paths:
+```python
+from backend.scraper import IRReportFinder
+from backend.prompt_parser import PromptParser
+from backend.company_resolver import get_resolver
+```
+
+### File Paths
+Data files (`company_mapping.json`, `cache.db`) are in the project root.
+The backend modules use `Path(__file__).parent.parent` to locate them.
+
+### Cache Persistence
+- **Local**: SQLite `cache.db` persists
+- **Serverless**: Cache resets each request (consider external DB for production)
+
+---
+
+## Production Checklist
+
+- [ ] Set all environment variables
+- [ ] Update frontend API URL for production backend
+- [ ] Configure CORS in `backend/main.py` for production domain
+- [ ] Consider external database for caching (PostgreSQL/Redis)
+- [ ] Set up monitoring/logging

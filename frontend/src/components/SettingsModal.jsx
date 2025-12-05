@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
+import { API_URL } from '../config'
 import './SettingsModal.css'
-
-const API_URL = 'http://localhost:8000'
 
 function SettingsModal({ isOpen, onClose }) {
     const [loading, setLoading] = useState(false)

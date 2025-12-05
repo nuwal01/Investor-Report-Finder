@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { API_URL } from '../config'
 import './CompanyAutocomplete.css'
-
-const API_URL = 'http://localhost:8000'
 
 /**
  * CompanyAutocomplete - Autocomplete dropdown for company name/ticker search

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_URL } from '../config';
 import './FinancialAnalysis.css';
 
 export default function FinancialAnalysis({ ticker }) {
@@ -10,7 +11,7 @@ export default function FinancialAnalysis({ ticker }) {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:8000/api/analyze-financials', {
+            const response = await fetch(`${API_URL}/api/analyze-financials`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -19,9 +20,9 @@ export default function FinancialAnalysis({ ticker }) {
                     extract_from_pdfs: false
                 })
             });
-            
+
             if (!response.ok) throw new Error('Analysis failed');
-            
+
             const data = await response.json();
             setAnalysis(data);
         } catch (err) {
@@ -37,9 +38,9 @@ export default function FinancialAnalysis({ ticker }) {
         <div className="financial-analysis-card">
             <div className="analysis-header">
                 <h3>📊 Financial Analysis</h3>
-                <button 
-                    className="analyze-button" 
-                    onClick={handleAnalyze} 
+                <button
+                    className="analyze-button"
+                    onClick={handleAnalyze}
                     disabled={loading}
                 >
                     {loading ? 'Analyzing...' : 'Run Analysis'}
@@ -60,7 +61,7 @@ export default function FinancialAnalysis({ ticker }) {
                             ))}
                         </div>
                     </div>
-                    
+
                     <div className="message-box">
                         <p>{analysis.message}</p>
                     </div>

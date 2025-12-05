@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_URL } from '../config';
 import './TickerInfo.css';
 
 export default function TickerInfo({ ticker }) {
@@ -10,7 +11,7 @@ export default function TickerInfo({ ticker }) {
 
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/analyze-financials', {
+            const response = await fetch(`${API_URL}/api/analyze-financials`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
