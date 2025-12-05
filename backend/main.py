@@ -219,12 +219,10 @@ async def search_reports(request: SearchRequest):
         user_scraper = scraper
         if request.tavily_api_key or request.serper_api_key:
             # Create a new scraper with user's API keys
-            import os
-            if request.tavily_api_key:
-                os.environ['TAVILY_API_KEY'] = request.tavily_api_key
-            if request.serper_api_key:
-                os.environ['SERPER_API_KEY'] = request.serper_api_key
-            user_scraper = IRReportFinder(api_key=request.tavily_api_key)
+            user_scraper = IRReportFinder(
+                api_key=request.tavily_api_key,
+                serper_key=request.serper_api_key
+            )
         
         reports = user_scraper.search_reports(
             ticker=search_params['ticker'],

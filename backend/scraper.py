@@ -62,15 +62,16 @@ class IRReportFinder:
     Main class for finding investor relations reports from company websites.
     """
     
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, serper_key: Optional[str] = None):
         """
         Initialize the IR report finder.
         
         Args:
             api_key: Optional Tavily API key (will use env var if not provided)
+            serper_key: Optional Serper API key (will use env var if not provided)
         """
         self.api_key = api_key or TAVILY_API_KEY
-        self.serper_key = SERPER_API_KEY
+        self.serper_key = serper_key or SERPER_API_KEY
         self.cache = CacheManager()
         self.last_request_time = 0
         self.session = requests.Session()
