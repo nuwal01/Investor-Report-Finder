@@ -6,6 +6,7 @@ venv/
 ENV/
 .venv
 .env
+.env.example
 .pytest_cache/
 cache.db
 
