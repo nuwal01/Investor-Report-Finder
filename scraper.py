@@ -24,7 +24,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
 from cache_manager import CacheManager
-from ticker_parser import TickerParser
+from backend.ticker_parser import TickerParser
 
 # Configure logging
 logging.basicConfig(
