@@ -15,10 +15,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
-# Import from backend package using absolute imports
-from backend.scraper import IRReportFinder
-from backend.prompt_parser import PromptParser
-from backend.company_resolver import get_resolver
+# Import OpenAI + Serper hybrid report finder
+from openai_report_finder import OpenAISerperReportFinder
 
 # Load environment variables
 load_dotenv()
@@ -43,22 +41,11 @@ app.add_middleware(
 # Request/Response Models
 class SearchRequest(BaseModel):
     """Request model for search endpoint."""
-    # Option 1: Manual parameters
-    ticker: Optional[str] = Field(None, description="Company ticker symbol (e.g., AAPL)")
-    company_name: Optional[str] = Field(None, description="Company name (e.g., Apple, Tesla Inc.)")
-    report_type: Optional[str] = Field(None, description="Report type: annual, quarterly, earnings, presentation, 8-k, or financial_statements")
-    start_year: Optional[int] = Field(None, description="Start year", ge=2000, le=2030)
-    end_year: Optional[int] = Field(None, description="End year", ge=2000, le=2030)
-    quarter: Optional[str] = Field(None, description="Specific quarter (Q1, Q2, Q3, Q4) - optional filter")
+    # Natural language prompt (REQUIRED)
+    prompt: str = Field(..., description="Natural language query (e.g., 'Annual reports for Apple from 2020 to 2024')")
     
-    # Option 2: Natural language prompt
-    prompt: Optional[str] = Field(None, description="Natural language query (e.g., 'Find Apple 2023 annual report')")
-    
-    # Mode selection
-    mode: str = Field("auto", description="Search mode: 'auto', 'manual', or 'prompt'")
-    
-    # User-provided API keys (sent from frontend)
-    tavily_api_key: Optional[str] = Field(None, description="User's Tavily API key")
+    # Optional: User-provided API keys
+    openai_api_key: Optional[str] = Field(None, description="User's OpenAI API key")
     serper_api_key: Optional[str] = Field(None, description="User's Serper API key")
 
 class ReportResponse(BaseModel):
@@ -73,11 +60,10 @@ class ReportResponse(BaseModel):
 class SearchResponse(BaseModel):
     """Response model for search results."""
     success: bool
-    query: Dict
+    query: str  # Original prompt
     reports: List[ReportResponse]
     count: int
     message: str
-    resolved_company: Optional[Dict] = None  # Company name and ticker if resolved
 
 class CompanyResolveRequest(BaseModel):
     """Request model for company resolution."""
@@ -135,10 +121,7 @@ class SettingsResponse(BaseModel):
     openai_base_url: str = Field(description="OpenAI Base URL")
 
 
-# Initialize services
-scraper = IRReportFinder()
-parser = PromptParser()
-company_resolver = get_resolver()
+# Initialize OpenAI report finder (will be created per-request if user provides API key)
 
 @app.get("/")
 async def root():
@@ -148,105 +131,61 @@ async def root():
 @app.post("/search", response_model=SearchResponse)
 async def search_reports(request: SearchRequest):
     """
-    Search for investor reports.
+    Search for investor reports using OpenAI + Serper (hybrid approach).
     
-    Handles both structured requests (ticker, year, type) and natural language prompts.
+    Replicates ChatGPT's web browsing capability:
+    1. OpenAI parses the query
+    2. Serper searches Google for PDF URLs
+    3. Returns actual PDF links
     """
     try:
-        search_params = {}
-        resolved_company = None
+        print(f"\n{'='*60}")
+        print(f"Received search request: {request.prompt}")
+        print(f"{'='*60}")
         
-        # Handle natural language prompt
-        if request.prompt and (request.mode == "prompt" or request.mode == "auto" and not request.ticker and not request.company_name):
-            print(f"Processing prompt: {request.prompt}")
-            parsed = parser.parse_prompt(request.prompt)
-            
-            if not parsed:
-                raise HTTPException(status_code=400, detail="Could not understand the prompt. Please try again or use manual search.")
-                
-            search_params = parsed
-            # Override with any manual params if provided
-            if request.ticker: search_params['ticker'] = request.ticker
-            if request.company_name: 
-                # Resolve company name to ticker
-                matches = company_resolver.resolve(request.company_name, max_results=1)
-                if matches:
-                    search_params['ticker'] = matches[0]['ticker']
-                    resolved_company = matches[0]
-            if request.report_type: search_params['report_type'] = request.report_type
-            
-        # Handle manual parameters
-        else:
-            # Try to resolve company name if provided
-            ticker = request.ticker
-            if request.company_name and not ticker:
-                matches = company_resolver.resolve(request.company_name, max_results=1)
-                if matches:
-                    ticker = matches[0]['ticker']
-                    resolved_company = matches[0]
-                else:
-                    raise HTTPException(status_code=404, detail=f"Could not find company matching '{request.company_name}'. Please try a different name or use the ticker symbol.")
-            
-            if not ticker:
-                raise HTTPException(status_code=400, detail="Either ticker symbol or company name is required for manual search.")
-                
-            search_params = {
-                "ticker": ticker,
-                "report_type": request.report_type or "annual",
-                "start_year": request.start_year or 2020,
-                "end_year": request.end_year or 2024
-            }
-            
-            # If ticker was provided directly, try to get company name
-            if request.ticker and not resolved_company:
-                company_name = company_resolver.get_company_name(ticker)
-                if company_name:
-                    resolved_company = {
-                        'ticker': ticker,
-                        'company_name': company_name,
-                        'match_type': 'direct_ticker',
-                        'confidence': 1.0
-                    }
-            
-        # Validate required fields
-        if not search_params.get('ticker'):
-             raise HTTPException(status_code=400, detail="Could not identify company ticker.")
-             
-        # Execute search
-        print(f"Searching with params: {search_params}")
+        # Get API keys (user-provided or from environment)
+        openai_key = request.openai_api_key or os.getenv("OPENAI_API_KEY")
+        serper_key = request.serper_api_key or os.getenv("SERPER_API_KEY")
         
-        # Use user-provided API keys if available, otherwise fall back to env vars
-        user_scraper = scraper
-        if request.tavily_api_key or request.serper_api_key:
-            # Create a new scraper with user's API keys
-            user_scraper = IRReportFinder(
-                api_key=request.tavily_api_key,
-                serper_key=request.serper_api_key
+        if not serper_key:
+            raise HTTPException(
+                status_code=400,
+                detail="Serper API key is required. Get one free at https://serper.dev (2,500 searches/month free). Add to .env or provide in request."
             )
         
-        reports = user_scraper.search_reports(
-            ticker=search_params['ticker'],
-            report_type=search_params.get('report_type', 'annual'),
-            start_year=search_params.get('start_year'),
-            end_year=search_params.get('end_year')
+        # Initialize hybrid finder (OpenAI + Serper)
+        finder = OpenAISerperReportFinder(
+            openai_key=openai_key,
+            serper_key=serper_key
         )
         
-        # Filter by quarter if specified
-        if request.quarter:
-            reports = [r for r in reports if r.get('quarter') == request.quarter]
+        # Find reports using hybrid approach
+        reports = finder.find_reports(request.prompt)
         
+        # Convert to response format
         report_objs = [ReportResponse(**r) for r in reports]
+        
+        # Build message
+        if report_objs:
+            message = f"Found {len(report_objs)} report(s) using OpenAI + Serper (web search)"
+        else:
+            message = "No reports found. Try refining your search or check if reports are available for the requested period."
+        
         return {
             "success": True,
-            "query": {**search_params, "mode": request.mode},
+            "query": request.prompt,
             "reports": jsonable_encoder(report_objs),
             "count": len(report_objs),
-            "message": f"Found {len(report_objs)} report(s)" if report_objs else f"Could not find {search_params.get('report_type')} reports for {search_params.get('ticker')} ({search_params.get('start_year')}-{search_params.get('end_year')}). This might be due to robots.txt blocking or non-standard IR page structure.",
-            "resolved_company": resolved_company
+            "message": message
         }
         
+    except ValueError as e:
+        # Handle validation errors
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         print(f"Search error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/resolve-company", response_model=CompanyResolveResponse)
@@ -418,8 +357,8 @@ async def analyze_financials(request: AnalysisRequest):
     This endpoint provides structure for future full implementation.
     """
     try:
-        from backend.ticker_parser import TickerParser
-        from backend.financial_analyzer import FinancialAnalyzer
+        from ticker_parser import TickerParser
+        from financial_analyzer import FinancialAnalyzer
         
         ticker_parser = TickerParser()
         analyzer = FinancialAnalyzer()
@@ -452,8 +391,8 @@ async def analyze_financials(request: AnalysisRequest):
 async def generate_report(request: ReportGenerationRequest):
     """Generate comprehensive financial analysis report."""
     try:
-        from backend.report_generator import FinancialReportGenerator
-        from backend.accounting_standards import AccountingStandardMapper
+        from report_generator import FinancialReportGenerator
+        from accounting_standards import AccountingStandardMapper
         
         generator = FinancialReportGenerator()
         standards_mapper = AccountingStandardMapper()
