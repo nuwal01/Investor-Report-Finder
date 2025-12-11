@@ -8,7 +8,21 @@ A simplified, AI-powered tool to find investor relations reports using natural l
 - **Direct PDF URLs**: Get instant links to investor reports
 - **OpenAI-Powered**: Uses OpenAI (or OpenRouter) to understand queries and find reports
 - **Clean Interface**: Minimalist UI with prompt-based search
-- **No Complex APIs**: No need for Tavily, Serper, or Gemini API keys
+- **Global Coverage**: Supports companies from 40+ countries
+
+## 🌍 Supported Countries
+
+Users can search for companies from the following countries:
+
+**Americas**: Argentina, Brazil, Canada, Cayman Islands, Chile, Colombia, Mexico, United States
+
+**Europe**: Belgium, Cyprus, Lithuania, Luxembourg, Netherlands, Norway, Russia, Switzerland, Turkey, Ukraine, United Kingdom
+
+**Middle East & Africa**: Bahrain, Egypt, Kuwait, Mauritius, Nigeria, Oman, Qatar, Saudi Arabia, South Africa, United Arab Emirates
+
+**Asia-Pacific**: Azerbaijan, China, India, Indonesia, Kazakhstan, Singapore, Uzbekistan
+
+**Multilaterals**: TDB (Trade and Development Bank), Afreximbank (African Export-Import Bank)
 
 ## 📋 Requirements
 

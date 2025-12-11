@@ -25,7 +25,7 @@ OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL', '')
 class CountryIdentifier:
     """Identifies company country using AI reasoning."""
     
-    # Countries allowed to use Tavily/Serper (EXPANDED LIST - 30+ countries)
+    # Countries allowed to use Tavily/Serper (EXPANDED LIST - 40+ countries)
     ALLOWED_COUNTRIES = {
         # Original 3
         'United States', 'USA', 'US',
@@ -35,6 +35,8 @@ class CountryIdentifier:
         # New additions (alphabetically)
         'Argentina',
         'Azerbaijan',
+        'Bahrain',
+        'Belgium',
         'Brazil',
         'Canada',
         'Cayman Islands',
@@ -46,7 +48,9 @@ class CountryIdentifier:
         'Indonesia',
         'Kazakhstan',
         'Kuwait',
+        'Lithuania',
         'Luxembourg',
+        'Mauritius',
         'Mexico',
         'Netherlands',
         'Nigeria',

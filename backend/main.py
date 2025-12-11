@@ -104,8 +104,6 @@ class CompanyVerifyResponse(BaseModel):
 
 class SettingsRequest(BaseModel):
     """Request model for updating settings."""
-    google_api_key: Optional[str] = Field(None, description="Google API Key")
-    tavily_api_key: Optional[str] = Field(None, description="Tavily API Key")
     openai_api_key: Optional[str] = Field(None, description="OpenAI API Key")
     serper_api_key: Optional[str] = Field(None, description="Serper API Key")
     openai_provider: Optional[str] = Field(None, description="OpenAI Provider (openai or openrouter)")
@@ -113,8 +111,6 @@ class SettingsRequest(BaseModel):
 
 class SettingsResponse(BaseModel):
     """Response model for settings."""
-    google_api_key: str = Field(description="Google API Key (masked)")
-    tavily_api_key: str = Field(description="Tavily API Key (masked)")
     openai_api_key: str = Field(description="OpenAI API Key (masked)")
     serper_api_key: str = Field(description="Serper API Key (masked)")
     openai_provider: str = Field(description="OpenAI Provider")
@@ -269,8 +265,6 @@ async def get_settings():
         base_url = "https://openrouter.ai/api/v1"
     
     return {
-        "google_api_key": mask_key(os.getenv("GOOGLE_API_KEY")),
-        "tavily_api_key": mask_key(os.getenv("TAVILY_API_KEY")),
         "openai_api_key": mask_key(os.getenv("OPENAI_API_KEY")),
         "serper_api_key": mask_key(os.getenv("SERPER_API_KEY")),
         "openai_provider": provider,
@@ -294,10 +288,6 @@ async def update_settings(settings: SettingsRequest):
                         env_content[key.strip()] = value.strip()
         
         # Update with new values (only if provided)
-        if settings.google_api_key:
-            env_content['GOOGLE_API_KEY'] = settings.google_api_key
-        if settings.tavily_api_key:
-            env_content['TAVILY_API_KEY'] = settings.tavily_api_key
         if settings.openai_api_key:
             env_content['OPENAI_API_KEY'] = settings.openai_api_key
         if settings.serper_api_key:
@@ -357,8 +347,8 @@ async def analyze_financials(request: AnalysisRequest):
     This endpoint provides structure for future full implementation.
     """
     try:
-        from ticker_parser import TickerParser
-        from financial_analyzer import FinancialAnalyzer
+        from backend.ticker_parser import TickerParser
+        from backend.financial_analyzer import FinancialAnalyzer
         
         ticker_parser = TickerParser()
         analyzer = FinancialAnalyzer()
@@ -391,8 +381,8 @@ async def analyze_financials(request: AnalysisRequest):
 async def generate_report(request: ReportGenerationRequest):
     """Generate comprehensive financial analysis report."""
     try:
-        from report_generator import FinancialReportGenerator
-        from accounting_standards import AccountingStandardMapper
+        from backend.report_generator import FinancialReportGenerator
+        from backend.accounting_standards import AccountingStandardMapper
         
         generator = FinancialReportGenerator()
         standards_mapper = AccountingStandardMapper()

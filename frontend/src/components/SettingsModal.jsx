@@ -7,8 +7,7 @@ function SettingsModal({ isOpen, onClose }) {
     const [saving, setSaving] = useState(false)
     const [message, setMessage] = useState(null)
     const [settings, setSettings] = useState({
-        google_api_key: '',
-        tavily_api_key: '',
+        openai_provider: 'openai',  // 'openai' or 'openrouter'
         openai_api_key: '',
         serper_api_key: ''
     })
@@ -25,14 +24,13 @@ function SettingsModal({ isOpen, onClose }) {
         try {
             // Load from localStorage first (user's keys)
             const localKeys = {
-                google_api_key: localStorage.getItem('google_api_key') || '',
-                tavily_api_key: localStorage.getItem('tavily_api_key') || '',
+                openai_provider: localStorage.getItem('openai_provider') || 'openai',
                 openai_api_key: localStorage.getItem('openai_api_key') || '',
                 serper_api_key: localStorage.getItem('serper_api_key') || ''
             }
 
             // If we have local keys, use them
-            if (localKeys.tavily_api_key || localKeys.serper_api_key) {
+            if (localKeys.serper_api_key) {
                 setSettings(localKeys)
             } else {
                 // Otherwise try to fetch from server (legacy support)
@@ -41,8 +39,7 @@ function SettingsModal({ isOpen, onClose }) {
                     if (response.ok) {
                         const data = await response.json()
                         setSettings({
-                            google_api_key: data.google_api_key || '',
-                            tavily_api_key: data.tavily_api_key || '',
+                            openai_provider: data.openai_provider || 'openai',
                             openai_api_key: data.openai_api_key || '',
                             serper_api_key: data.serper_api_key || ''
                         })
@@ -66,14 +63,9 @@ function SettingsModal({ isOpen, onClose }) {
 
         try {
             // Save to localStorage for client-side use
-            if (settings.tavily_api_key && !settings.tavily_api_key.startsWith('****')) {
-                localStorage.setItem('tavily_api_key', settings.tavily_api_key)
-            }
+            localStorage.setItem('openai_provider', settings.openai_provider)
             if (settings.serper_api_key && !settings.serper_api_key.startsWith('****')) {
                 localStorage.setItem('serper_api_key', settings.serper_api_key)
-            }
-            if (settings.google_api_key && !settings.google_api_key.startsWith('****')) {
-                localStorage.setItem('google_api_key', settings.google_api_key)
             }
             if (settings.openai_api_key && !settings.openai_api_key.startsWith('****')) {
                 localStorage.setItem('openai_api_key', settings.openai_api_key)
@@ -85,8 +77,7 @@ function SettingsModal({ isOpen, onClose }) {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        google_api_key: settings.google_api_key.startsWith('****') ? null : settings.google_api_key,
-                        tavily_api_key: settings.tavily_api_key.startsWith('****') ? null : settings.tavily_api_key,
+                        openai_provider: settings.openai_provider,
                         openai_api_key: settings.openai_api_key.startsWith('****') ? null : settings.openai_api_key,
                         serper_api_key: settings.serper_api_key.startsWith('****') ? null : settings.serper_api_key
                     })
@@ -126,51 +117,51 @@ function SettingsModal({ isOpen, onClose }) {
                 ) : (
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
-                            <label htmlFor="google_api_key">
-                                Google API Key
-                                <span className="help-text">Used for Gemini LLM prompt parsing</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="google_api_key"
-                                value={settings.google_api_key}
-                                onChange={(e) => handleChange('google_api_key', e.target.value)}
-                                placeholder="Enter Google API Key"
-                            />
+                            <label>🔧 LLM Provider:</label>
+                            <div style={{ display: 'flex', gap: '20px', marginTop: '8px' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="provider"
+                                        value="openai"
+                                        checked={settings.openai_provider === 'openai'}
+                                        onChange={(e) => handleChange('openai_provider', e.target.value)}
+                                        style={{ marginRight: '8px' }}
+                                    />
+                                    OpenAI
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="provider"
+                                        value="openrouter"
+                                        checked={settings.openai_provider === 'openrouter'}
+                                        onChange={(e) => handleChange('openai_provider', e.target.value)}
+                                        style={{ marginRight: '8px' }}
+                                    />
+                                    OpenRouter (ChatGPT compatible)
+                                </label>
+                            </div>
+                            <span className="help-text">Choose your preferred LLM provider for query parsing</span>
                         </div>
-
-                        <div className="form-group">
-                            <label htmlFor="tavily_api_key">
-                                Tavily API Key
-                                <span className="help-text">Used for direct report search</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="tavily_api_key"
-                                value={settings.tavily_api_key}
-                                onChange={(e) => handleChange('tavily_api_key', e.target.value)}
-                                placeholder="Enter Tavily API Key"
-                            />
-                        </div>
-
                         <div className="form-group">
                             <label htmlFor="openai_api_key">
-                                OpenAI API Key
-                                <span className="help-text">Used for alternative LLM prompt parsing</span>
+                                OpenAI API Key (optional)
+                                <span className="help-text">Used for query parsing. Get yours at platform.openai.com</span>
                             </label>
                             <input
                                 type="text"
                                 id="openai_api_key"
                                 value={settings.openai_api_key}
                                 onChange={(e) => handleChange('openai_api_key', e.target.value)}
-                                placeholder="Enter OpenAI API Key"
+                                placeholder="sk-..."
                             />
                         </div>
 
                         <div className="form-group">
                             <label htmlFor="serper_api_key">
-                                Serper API Key
-                                <span className="help-text">Used for alternative LLM prompt parsing</span>
+                                Serper API Key (required) *
+                                <span className="help-text">Used for web search. Get 2,500 free searches at serper.dev</span>
                             </label>
                             <input
                                 type="text"

@@ -89,7 +89,10 @@ class OpenAISerperReportFinder:
             })
             print(f"\n📌 Added official investor relations page: {ir_page}")
         
-        print(f"\nFound {len(reports)} total results (PDFs + IR page)")
+        print(f"\n✅ FINAL RESULTS: Found {len(reports)} total results for '{parsed['company']}'")
+        print(f"   Requested company: {parsed['company']}")
+        print(f"   Report type: {parsed.get('report_type', 'annual')}")
+        print(f"   Years: {parsed.get('years', [datetime.now().year])}")
         return reports
     
     def _parse_query(self, prompt: str) -> Dict:
@@ -313,17 +316,35 @@ If no years specified, use current year. If no report type, use "annual"."""
                 company_main = re.sub(r'\s*\([^)]*\)', '', company_lower).strip()
                 company_words = company_main.split()
                 
-                # Check if any significant company word appears in title or URL
-                has_company = False
-                for word in company_words:
-                    if len(word) > 3:  # Skip short words like "inc", "co", "the"
-                        if word in title or word in link.lower():
-                            has_company = True
-                            break
+                # Filter out common business words that don't help identify the company
+                common_words = ['inc', 'corp', 'corporation', 'ltd', 'limited', 'co', 'company', 
+                               'the', 'and', 'of', 'group', 'holdings', 'international']
+                significant_words = [word for word in company_words if len(word) > 3 and word not in common_words]
                 
-                if not has_company:
-                    print(f"  ❌ Filtered out (company mismatch): {title[:50]}")
-                    continue
+                # Require ALL significant company words to appear in title or URL
+                if significant_words:
+                    matches = []
+                    for word in significant_words:
+                        if word in title or word in link.lower():
+                            matches.append(word)
+                    
+                    # Must match ALL significant words (strict validation)
+                    if len(matches) != len(significant_words):
+                        print(f"  ❌ Filtered out (company mismatch): {title[:50]}")
+                        print(f"     Expected ALL words: {significant_words}, Found only: {matches}")
+                        continue
+                else:
+                    # If no significant words, fall back to checking any company word
+                    has_company = False
+                    for word in company_words:
+                        if len(word) > 2:  # Skip very short words
+                            if word in title or word in link.lower():
+                                has_company = True
+                                break
+                    
+                    if not has_company:
+                        print(f"  ❌ Filtered out (company mismatch): {title[:50]}")
+                        continue
                 
                 # STRICT: Check year is actually in title or URL
                 year_str = str(year)

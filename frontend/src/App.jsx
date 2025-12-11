@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { useTheme } from './context/ThemeContext'
+import SettingsModal from './components/SettingsModal'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -10,10 +11,7 @@ function App() {
     const [results, setResults] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [openaiApiKey, setOpenaiApiKey] = useState('')
-    const [serperApiKey, setSerperApiKey] = useState('')
-    const [provider, setProvider] = useState('openai') // 'openai' or 'openrouter'
-    const [showApiKeyInput, setShowApiKeyInput] = useState(false)
+    const [showSettingsModal, setShowSettingsModal] = useState(false)
 
     const handleSearch = async (e) => {
         e.preventDefault()
@@ -28,6 +26,10 @@ function App() {
         setResults(null)
 
         try {
+            // Get API keys from localStorage
+            const openaiApiKey = localStorage.getItem('openai_api_key') || ''
+            const serperApiKey = localStorage.getItem('serper_api_key') || ''
+
             const requestBody = {
                 prompt: prompt.trim(),
                 openai_api_key: openaiApiKey || undefined,
@@ -88,7 +90,7 @@ function App() {
                             </button>
                             <button
                                 className="settings-button"
-                                onClick={() => setShowApiKeyInput(!showApiKeyInput)}
+                                onClick={() => setShowSettingsModal(true)}
                                 title="API Settings"
                             >
                                 ⚙️ Settings
@@ -97,92 +99,11 @@ function App() {
                     </div>
                 </header>
 
-                {/* API Key Input (collapsible) */}
-                {showApiKeyInput && (
-                    <div className="api-key-section">
-                        <h3 style={{ marginTop: 0, marginBottom: '1rem' }}>🔑 API Configuration</h3>
-
-                        {/* Provider Selection */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                                LLM Provider:
-                            </label>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                                    <input
-                                        type="radio"
-                                        value="openai"
-                                        checked={provider === 'openai'}
-                                        onChange={(e) => setProvider(e.target.value)}
-                                        style={{ marginRight: '0.5rem' }}
-                                    />
-                                    OpenAI
-                                </label>
-                                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                                    <input
-                                        type="radio"
-                                        value="openrouter"
-                                        checked={provider === 'openrouter'}
-                                        onChange={(e) => setProvider(e.target.value)}
-                                        style={{ marginRight: '0.5rem' }}
-                                    />
-                                    OpenRouter (ChatGPT compatible)
-                                </label>
-                            </div>
-                            <small style={{ display: 'block', marginTop: '0.25rem', color: '#666' }}>
-                                Choose your preferred LLM provider for query parsing
-                            </small>
-                        </div>
-
-                        {/* OpenAI/OpenRouter API Key */}
-                        <div style={{ marginBottom: '1rem' }}>
-                            <label htmlFor="openai-key">
-                                {provider === 'openai' ? 'OpenAI' : 'OpenRouter'} API Key (optional):
-                            </label>
-                            <input
-                                id="openai-key"
-                                type="password"
-                                value={openaiApiKey}
-                                onChange={(e) => setOpenaiApiKey(e.target.value)}
-                                placeholder={provider === 'openai' ? 'sk-...' : 'sk-or-v1-...'}
-                                className="api-key-input"
-                            />
-                            <small style={{ display: 'block', marginTop: '0.25rem' }}>
-                                {provider === 'openai'
-                                    ? 'Get your key at platform.openai.com'
-                                    : 'Get your key at openrouter.ai - supports ChatGPT models'}
-                            </small>
-                        </div>
-
-                        {/* Serper API Key */}
-                        <div style={{ marginBottom: '1rem' }}>
-                            <label htmlFor="serper-key">
-                                Serper API Key (required for search):
-                                <span style={{ color: 'red', marginLeft: '0.25rem' }}>*</span>
-                            </label>
-                            <input
-                                id="serper-key"
-                                type="password"
-                                value={serperApiKey}
-                                onChange={(e) => setSerperApiKey(e.target.value)}
-                                placeholder="Enter Serper API key..."
-                                className="api-key-input"
-                            />
-                            <small style={{ display: 'block', marginTop: '0.25rem' }}>
-                                Get 2,500 free searches/month at{' '}
-                                <a href="https://serper.dev" target="_blank" rel="noopener noreferrer">
-                                    serper.dev
-                                </a>
-                            </small>
-                        </div>
-
-                        <div className="info-box">
-                            <strong>ℹ️ Note:</strong>
-                            Your API keys are only sent with requests and not stored permanently.
-                            Configure server-side keys in <code>.env</code> file for persistent configuration.
-                        </div>
-                    </div>
-                )}
+                {/* Settings Modal */}
+                <SettingsModal
+                    isOpen={showSettingsModal}
+                    onClose={() => setShowSettingsModal(false)}
+                />
 
                 {/* Search Form */}
                 <form onSubmit={handleSearch} className="search-form">
