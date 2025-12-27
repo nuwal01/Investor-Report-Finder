@@ -1,0 +1,209 @@
+/* AmbiguityModal Styles */
+
+.ambiguity-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.ambiguity-modal {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.ambiguity-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #eee;
+}
+
+.ambiguity-modal-header h3 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.ambiguity-modal-header p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.ambiguity-modal-body {
+    padding: 16px 24px;
+    overflow-y: auto;
+}
+
+.company-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.company-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.company-option:hover {
+    border-color: #4A90E2;
+    background-color: #f5f9ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.1);
+}
+
+.company-option-main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.company-option .company-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.company-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.company-option-arrow {
+    color: #ccc;
+    font-size: 20px;
+    font-weight: 300;
+    transition: color 0.2s;
+}
+
+.company-option:hover .company-option-arrow {
+    color: #4A90E2;
+}
+
+.ambiguity-modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Reuse badge styles from CompanyAutocomplete */
+.ticker-badge {
+    background: #4A90E2;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.exchange-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.exchange-nasdaq {
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.exchange-nyse {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.exchange-nse {
+    background: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffe0b2;
+}
+
+.exchange-tse {
+    background: #fce4ec;
+    color: #c2185b;
+    border: 1px solid #f8bbd0;
+}
+
+.exchange-krx {
+    background: #f3e5f5;
+    color: #7b1fa2;
+    border: 1px solid #e1bee7;
+}
+
+.exchange-lse {
+    background: #e0f7fa;
+    color: #006064;
+    border: 1px solid #b2ebf2;
+}
+
+.exchange-fwb {
+    background: #eceff1;
+    color: #37474f;
+    border: 1px solid #cfd8dc;
+}
+
+.exchange-asx {
+    background: #fff8e1;
+    color: #ff8f00;
+    border: 1px solid #ffecb3;
+}
+
+.country-badge {
+    font-size: 11px;
+    color: #666;
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}

@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+ENV/
+.venv
+.env
+.env.example
+.pytest_cache/
+cache.db
+
+# Node
+node_modules/
+dist/
+coverage/
+.vercel/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Distribution / packaging
+*.egg-info/
+
+# Logs and Backups
+*.log
+*.backup
+
+
+
+# Environment files
+.env
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+
+# Test files
+test_*.py
+
+# Debug scripts
+debug_*.py
+verify_*.py
+
+# Cache / Temporary files
+cache/
+tmp/
+

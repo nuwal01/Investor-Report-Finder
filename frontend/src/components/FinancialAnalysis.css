@@ -1,0 +1,73 @@
+.financial-analysis-card {
+    margin: 20px 0;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.analysis-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.analyze-button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.analyze-button:hover {
+    background: #43a047;
+}
+
+.analyze-button:disabled {
+    background: #a5d6a7;
+    cursor: not-allowed;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.tag {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #f5f5f5;
+    color: #666;
+    text-transform: capitalize;
+}
+
+.tag.active {
+    background: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+}
+
+.message-box {
+    margin-top: 15px;
+    padding: 12px;
+    background: #fff3e0;
+    border-radius: 6px;
+    color: #e65100;
+    font-size: 14px;
+}
