@@ -129,9 +129,8 @@ class OpenAISerperReportFinder:
                 print(f"  Found: {official_website}")
                 notes_list.append(f"Found official IR: {ir_page}")
             
-            # STEP 2: Search for reports pages
-            print(f"\n[STEP 2] Searching for reports listing pages...")
-            reports_pages = self._find_reports_pages(parsed['company'], official_website)
+            # STEP 2: Reports pages search SKIPPED for speed - users can use IR link
+            # print(f\"\\n[STEP 2] Searching for reports listing pages...\")\n            # reports_pages = self._find_reports_pages(parsed['company'], official_website)
             if reports_pages:
                 notes_list.append(f"Found {len(reports_pages)} reports pages")
                 for rp in reports_pages:
@@ -160,7 +159,7 @@ class OpenAISerperReportFinder:
         found_years = set(r.get('year') for r in reports if r.get('type') != 'investor_relations_page')
         missing_years = sorted([y for y in requested_years if y not in found_years])
         
-        # STEP 4: Site-restricted search if missing years
+        # STEP 4: Site-restricted search for missing years
         if missing_years and self.serper_key and official_website:
             print(f"\n[STEP 4] Site-restricted search for missing years: {missing_years}")
             site_domain = urlparse(official_website).netloc
@@ -176,8 +175,8 @@ class OpenAISerperReportFinder:
         found_years = set(r.get('year') for r in reports if r.get('type') != 'investor_relations_page')
         missing_years = sorted([y for y in requested_years if y not in found_years])
         
-        # STEP 5: OpenRouter fallback if still missing
-        if (not reports or missing_years) and self.openrouter_retriever:
+        # STEP 5: OpenRouter fallback DISABLED for speed (uncomment if needed)
+        if False and (not reports or missing_years) and self.openrouter_retriever:
             print(f"\n[STEP 5] OpenRouter AI fallback...")
             try:
                 doc_types = self._get_doc_types(report_type)
@@ -245,7 +244,7 @@ class OpenAISerperReportFinder:
         print(f"   Requested years: {requested_years}")
         print(f"   Found years: {sorted(found_years)}")
         if missing_years:
-            print(f"   ⚠️ Missing years: {missing_years}")
+            print(f"   [!] Missing years: {missing_years}")
         
         # Calculate missing periods (quarters for quarterly, years for annual)
         missing_periods = []
@@ -267,7 +266,7 @@ class OpenAISerperReportFinder:
             missing_periods = [f"FY{y}" for y in missing_years]
         
         if missing_periods:
-            print(f"   ⚠️ Missing periods: {missing_periods}")
+            print(f"   [!] Missing periods: {missing_periods}")
         
         # Build request structure for output
         request_info = {
@@ -613,7 +612,7 @@ Do NOT say generic things like "not found" or "unavailable"."""
         all_results = []
         
         for query in queries:
-            print(f"    → Site search: {query}")
+            print(f"    -> Site search: {query}")
             
             try:
                 response = requests.post(
@@ -816,16 +815,16 @@ IMPORTANT:
         KEY RULE for QUARTERLY: Returns EXACTLY ONE PDF per (year, quarter) pair.
         requested_quarters: If specified (e.g. ['Q1']), only return docs for those specific quarters.
         """
-        print(f"\n⏳ Searching {len(years)} years...")
+        print(f"\n[SEARCH] Searching {len(years)} years...")
         if requested_quarters:
-            print(f"  ➡️ Looking for specific quarters: {requested_quarters}")
+            print(f"  -> Looking for specific quarters: {requested_quarters}")
         all_candidates = []
         
         # For quarterly requests with specific quarters, search for each (year, quarter) pair
         if report_type == 'quarterly' and requested_quarters:
             # Create list of (year, quarter) pairs to search
             search_periods = [(year, q) for year in years for q in requested_quarters]
-            print(f"  📅 Searching {len(search_periods)} period(s): {search_periods}")
+            print(f"  [PERIODS] Searching {len(search_periods)} period(s): {search_periods}")
             
             # Process periods in parallel (max 4 concurrent)
             with ThreadPoolExecutor(max_workers=4) as executor:
@@ -840,14 +839,14 @@ IMPORTANT:
                         period_candidates = future.result(timeout=10)
                         if period_candidates:
                             all_candidates.extend(period_candidates)
-                            print(f"  ✓ {quarter} {year}: Found {len(period_candidates)} candidates")
+                            print(f"  [OK] {quarter} {year}: Found {len(period_candidates)} candidates")
                         else:
                             print(f"  - {quarter} {year}: No candidates found")
                     except Exception as e:
-                        print(f"  ✗ {quarter} {year}: Error - {e}")
+                        print(f"  [X] {quarter} {year}: Error - {e}")
         else:
-            # Process years in parallel (max 3 concurrent) for annual/generic requests
-            with ThreadPoolExecutor(max_workers=3) as executor:
+            # Process years in parallel (max 5 concurrent) for speed
+            with ThreadPoolExecutor(max_workers=5) as executor:
                 future_to_year = {
                     executor.submit(self._search_year, company, report_type, year, requested_quarters): year 
                     for year in years
@@ -856,21 +855,21 @@ IMPORTANT:
                 for future in as_completed(future_to_year):
                     year = future_to_year[future]
                     try:
-                        year_candidates = future.result(timeout=8)
+                        year_candidates = future.result(timeout=5)
                         if year_candidates:
                             all_candidates.extend(year_candidates)
-                            print(f"  ✓ Year {year}: Found {len(year_candidates)} candidates")
+                            print(f"  [OK] Year {year}: Found {len(year_candidates)} candidates")
                         else:
                             print(f"  - Year {year}: No candidates found")
                     except Exception as e:
-                        print(f"  ✗ Year {year}: Error - {e}")
+                        print(f"  [X] Year {year}: Error - {e}")
         
         # ========== SELECTION LOGIC ==========
         best_reports = []
         
         if report_type == 'quarterly' and requested_quarters:
             # QUARTERLY MODE: Select ONE BEST PDF per (year, quarter) pair
-            print(f"\n📊 Selecting best PDF per period from {len(all_candidates)} candidates...")
+            print(f"\n[SELECT] Selecting best PDF per period from {len(all_candidates)} candidates...")
             
             # Group candidates by (year, quarter)
             candidates_by_period = {}
@@ -903,7 +902,7 @@ IMPORTANT:
                         print(f"  [MISS] {quarter} {year}: No candidates found")
         else:
             # ANNUAL MODE: Select ONE BEST PDF per year
-            print(f"\n📊 Selecting best PDF per year from {len(all_candidates)} candidates...")
+            print(f"\n[SELECT] Selecting best PDF per year from {len(all_candidates)} candidates...")
             
             # Group candidates by reporting_period_year
             candidates_by_year = {}
@@ -1036,7 +1035,7 @@ IMPORTANT:
         
         # Try each query strategy (limit to 2 for speed)
         for query in queries[:2]:
-            print(f"    → Searching: {query}")
+            print(f"    -> Searching: {query}")
             
             try:
                 response = requests.post(
@@ -1091,33 +1090,57 @@ IMPORTANT:
         """
         all_candidates = []
         
-        # Get clean company name for site search
+        # Get clean company name for site search - remove ticker symbols
         company_clean = company.lower().replace('pjsc', '').replace('oil company', '').strip()
         company_first_word = company_clean.split()[0] if company_clean.split() else company_clean
+        
+        # Extract primary company name for search
+        # For non-English names like "Türkiye Varlık Fonu (Turkey Wealth Fund, TWF)", prefer English in parentheses
+        import re as regex
+        company_for_search = company
+        
+        # Check if there's an English translation in parentheses
+        paren_match = regex.search(r'\(([^)]+)\)', company)
+        main_name = regex.sub(r'\s*\([^)]*\)', '', company).strip()
+        
+        # If main name has non-ASCII chars (Turkish, Russian, etc.), prefer English in parentheses
+        has_non_ascii = any(ord(c) > 127 for c in main_name)
+        if has_non_ascii and paren_match:
+            # Use the English translation from parentheses
+            paren_content = paren_match.group(1)
+            # Remove ticker suffixes from parenthetical content
+            paren_parts = paren_content.split(',')
+            company_for_search = paren_parts[0].strip()  # Take first part before comma
+            print(f"  [DEBUG] Using English name from parentheses: '{company_for_search}'")
+        else:
+            # Remove parenthetical content (tickers)
+            company_for_search = main_name
+            # Remove trailing all-uppercase words (likely tickers)
+            words = company_for_search.split()
+            if len(words) > 1 and words[-1].isupper() and len(words[-1]) <= 6:
+                company_for_search = ' '.join(words[:-1])
+
         
         # Multiple search strategies for better recall
         if report_type in ['annual', '10-k', 'financial_statements']:
             queries = [
                 # Strategy 1: Simple annual report search (broadest)
-                f'"{company}" annual report {year} filetype:pdf',
+                f'"{company_for_search}" annual report {year} filetype:pdf',
                 # Strategy 2: Investor relations specific
-                f'"{company}" investor relations annual report {year} pdf',
-                # Strategy 3: Spanish - informe anual
-                f'"{company}" informe anual {year} filetype:pdf',
-                # Strategy 4: French - rapport annuel
-                f'"{company}" rapport annuel {year} filetype:pdf',
-                # Strategy 5: German - Geschäftsbericht / Jahresbericht
-                f'"{company}" Geschäftsbericht {year} filetype:pdf',
-                # Strategy 6: Portuguese - relatório anual
-                f'"{company}" relatório anual {year} filetype:pdf',
-                # Strategy 7: Turkish - yıllık rapor / faaliyet raporu
-                f'"{company}" faaliyet raporu {year} filetype:pdf',
-                # Strategy 8: Russian - годовой отчет
-                f'"{company}" годовой отчет {year} filetype:pdf',
-                # Strategy 9: Site-specific search
+                f'"{company_for_search}" investor relations annual report {year} pdf',
+                # Strategy 3: SEC.gov for US companies (10-K filings)
+                f'site:sec.gov "{company_for_search}" 10-K {year} filetype:pdf',
+                # Strategy 4: 10-K specific search
+                f'"{company_for_search}" form 10-K {year} filetype:pdf',
+                # Strategy 5: 20-F for international companies
+                f'"{company_for_search}" form 20-F {year} filetype:pdf',
+                # Strategy 6: Spanish - informe anual
+                f'"{company_for_search}" informe anual {year} filetype:pdf',
+                # Strategy 7: Site-specific search
                 f'site:{company_first_word}.com annual report {year} pdf',
             ]
-            # IMPROVED: Use 5 queries for better recall  
+
+            # Use 5 queries for better recall (SEC + standard + international)
             queries = queries[:5]
         elif report_type == 'quarterly':
             # ========== QUARTER-SPECIFIC SEARCH QUERIES ==========
@@ -1132,21 +1155,21 @@ IMPORTANT:
                 }
                 for q in requested_quarters:
                     labels = quarter_labels.get(q.upper(), [q])
-                    # Primary query with exact quarter label
-                    queries.append(f'"{company}" "{labels[0]} {year}" results pdf')
-                    queries.append(f'"{company}" "{labels[0]} {year}" earnings pdf')
+                    # Primary query with exact quarter label (use cleaned company name)
+                    queries.append(f'"{company_for_search}" "{labels[0]} {year}" results pdf')
+                    queries.append(f'"{company_for_search}" "{labels[0]} {year}" earnings pdf')
                     # Secondary query with alternate label
                     if len(labels) > 1:
-                        queries.append(f'"{company}" "{labels[1]} {year}" financial results pdf')
+                        queries.append(f'"{company_for_search}" "{labels[1]} {year}" financial results pdf')
                     # Ordinal quarter query
                     if len(labels) > 2:
-                        queries.append(f'"{company}" "{labels[2]} {year}" pdf')
+                        queries.append(f'"{company_for_search}" "{labels[2]} {year}" pdf')
             else:
                 # Generic quarterly request - search for any quarter
                 queries = [
-                    f'"{company}" quarterly report {year} filetype:pdf',
-                    f'"{company}" Q1 Q2 Q3 Q4 {year} results pdf',
-                    f'"{company}" interim report {year} filetype:pdf',
+                    f'"{company_for_search}" quarterly report {year} filetype:pdf',
+                    f'"{company_for_search}" Q1 Q2 Q3 Q4 {year} results pdf',
+                    f'"{company_for_search}" interim report {year} filetype:pdf',
                 ]
         elif report_type == 'earnings':
             queries = [
@@ -1172,7 +1195,7 @@ IMPORTANT:
         
         # Try each query strategy
         for query in queries:
-            print(f"  → Searching: {query}")
+            print(f"  -> Searching: {query}")
             
             try:
                 response = requests.post(
@@ -1346,6 +1369,15 @@ IMPORTANT:
             # Investment banks/trusts/third-party (NOT company's own reports)
             'form n-q', 'form n-csr',
             'investment trust', 'fund prospectus', 'fund report',
+            # Credit rating agencies (NOT company annual reports)
+            'fitch ratings', 'fitch rating', 'fitchratings',
+            'moody\'s', 'moodys', 'moody investor',
+            's&p global', 's&p rating', 'standard & poor',
+            'credit rating', 'credit opinion', 'rating action',
+            'rating report', 'credit analysis',
+            # Research/analyst reports (NOT company's own)
+            'equity research', 'analyst report', 'broker report',
+            'investment research', 'research report',
         ]
         
         # Earnings release keywords (for earnings report_type)
@@ -1481,7 +1513,10 @@ IMPORTANT:
                     'first quarter', 'second quarter', 'third quarter', 'fourth quarter',
                     '6 month', '9 month', 'six month', 'nine month', '6-month', '9-month',
                     '3 month', '3-month', 'three month',  # Quarterly periods
-                    'trading update', 'trading statement'
+                    'trading update', 'trading statement',
+                    # Press releases ONLY (be careful - snippets may mention these)
+                    'press release', 'earnings release',
+                    'news release', 'media release',
                 ]
                 is_wrong_type = any(kw in combined_text for kw in annual_reject_keywords)
                 if is_wrong_type:
@@ -1493,10 +1528,11 @@ IMPORTANT:
                 annual_accept_keywords = [
                     # Standard annual report labels
                     'annual report', 'annual financial', 'yearly report',
-                    'fy20', 'fy19', 'fy21', 'fy22', 'fy23', 'fy24',  # Fiscal year prefixes
+                    'fy20', 'fy19', 'fy21', 'fy22', 'fy23', 'fy24', 'fy25',  # Fiscal year prefixes
                     'fiscal year', 'year ended', 'year ending',
-                    # SEC/International filings
-                    '10-k', '20-f', 'form 10-k', 'form 20-f', 'annual accounts',
+                    # SEC/International filings (with and without hyphens)
+                    '10-k', '10k', '20-f', '20f', 'form 10-k', 'form 20-f', 'form10k', 'form20f',
+                    'annual accounts',
                     # Financial statements (if not already rejected as interim)
                     'financial statements', 'audited financial', 'consolidated financial',
                     'audited accounts', 'annual audited',
@@ -1506,6 +1542,7 @@ IMPORTANT:
                     # Russian/CIS variations
                     'годовой отчет', 'annual review',  # Note: "annual review" for CIS companies
                 ]
+
                 has_annual = any(kw in combined_text for kw in annual_accept_keywords)
                 if not has_annual:
                     print(f"  [X] REJECTED (no annual keywords): {original_title[:50]}")
@@ -1580,9 +1617,9 @@ IMPORTANT:
             period = f"FY{reporting_year}"
             if doc_quarter:
                 period = f"{doc_quarter} {reporting_year}"
-                print(f"  [✓] ACCEPTED: {original_title[:60]} ({period})")
+                print(f"  [OK] ACCEPTED: {original_title[:60]} ({period})")
             else:
-                print(f"  [✓] ACCEPTED: {original_title[:60]} (FY{reporting_year})")
+                print(f"  [OK] ACCEPTED: {original_title[:60]} (FY{reporting_year})")
             
             pdf_reports.append({
                 'year': reporting_year,
@@ -1651,9 +1688,13 @@ IMPORTANT:
                 'annualreport',
                 'cloudfront.net', 'amazonaws.com',  # AWS CDN
                 'akamai', 'fastly', 'cdn',  # CDNs
+                'merlincdn.net',  # Merlin CDN (used by Turkcell, etc.)
                 'blob.core.windows.net',  # Azure
                 'disclosure',  # Disclosure services
+                'euronext.com',  # Euronext exchange
+                'direct.euronext',  # Euronext direct
             ]
+
             
             # For trusted domains, we allow them but company name is verified in STEP 4
             if any(td in domain for td in trusted_domains):
